@@ -1,0 +1,24 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "Database API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/aliang6/cse305.git"
+  },
+  "keywords": [],
+  "author": "Andy Liang",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.16.1",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5"
+  }
+}
