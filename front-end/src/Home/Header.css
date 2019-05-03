@@ -1,0 +1,37 @@
+#header {
+    width: 100%;
+}
+
+#header-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#header-links {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 70%;
+}
+
+.customer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 55%;
+}
+
+.seller-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 45%;
+}
+
+.header-btn {
+    border: 1px skyblue solid;
+    border-radius: 10px;
+    padding: 10px;
+}

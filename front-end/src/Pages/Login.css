@@ -1,0 +1,13 @@
+.login-page {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-direction: column;
+    margin: 50px 0px 50px 0px;
+}

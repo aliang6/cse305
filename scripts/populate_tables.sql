@@ -2,8 +2,8 @@ USE ecommerce;
 
 -- Populate tables with some test data
 
-LOAD DATA
-    INFILE '/var/lib/mysql-files/item_type.csv'
+LOAD DATA LOCAL
+    INFILE '/Users/Andy/Documents/GitHub/cse305/data/item_type.csv'
     INTO TABLE item_type
     CHARACTER SET UTF8
     FIELDS
@@ -12,8 +12,8 @@ LOAD DATA
         TERMINATED BY '\n'
     IGNORE 1 LINES;
 
-LOAD DATA
-    INFILE '/var/lib/mysql-files/item.csv'
+LOAD DATA LOCAL
+    INFILE '/Users/Andy/Documents/GitHub/cse305/data/item.csv'
     INTO TABLE item
     CHARACTER SET UTF8
     FIELDS
@@ -22,8 +22,8 @@ LOAD DATA
         TERMINATED BY '\n'
     IGNORE 1 LINES;
 
-LOAD DATA
-    INFILE '/var/lib/mysql-files/seller.csv'
+LOAD DATA LOCAL
+    INFILE '/Users/Andy/Documents/GitHub/cse305/data/seller.csv'
     INTO TABLE seller
     CHARACTER SET UTF8
     FIELDS
@@ -32,8 +32,8 @@ LOAD DATA
         TERMINATED BY '\n'
     IGNORE 1 LINES;
 
-LOAD DATA
-    INFILE '/var/lib/mysql-files/customer.csv'
+LOAD DATA LOCAL
+    INFILE '/Users/Andy/Documents/GitHub/cse305/data/customer.csv'
     INTO TABLE customer
     CHARACTER SET UTF8
     FIELDS
@@ -42,8 +42,8 @@ LOAD DATA
         TERMINATED BY '\n'
     IGNORE 1 LINES;
 
-LOAD DATA
-    INFILE '/var/lib/mysql-files/carrier.csv'
+LOAD DATA LOCAL
+    INFILE '/Users/Andy/Documents/GitHub/cse305/data/carrier.csv'
     INTO TABLE carrier
     CHARACTER SET UTF8
     FIELDS
