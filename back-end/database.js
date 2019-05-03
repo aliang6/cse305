@@ -68,6 +68,17 @@ async function getSeller(name) {
     return rows;
 }
 
+async function getCart(customer_id) {
+    let query =
+    `SELECT id, quantity, item_name, item_description, category, price
+    FROM shoppingcart 
+    JOIN item ON shoppingcart.item_id = item.id 
+    JOIN sells on shoppingcart.item_id = sells.item_id 
+    WHERE customer_id=?`;
+    let [rows, fields] = await conn.execute(query, [customer_id]);
+    return rows; 
+}
+
 async function addCustomer(first_name, last_name, email, phone) {
     let results = await getCustomer(email);
     if(results[0]) { // Customer exists
@@ -150,6 +161,49 @@ async function addItem(seller_id, name, desc, price, stock, type) { // Adds if d
     return;
 }
 
+async function addToCart(customer_id, item_id, quantity) {
+    let query = 'SELECT * FROM shoppingcart WHERE customer_id=? AND item_id=?';
+    let [row, fields] = await conn.execute(query, [customer_id, item_id]);
+    if(row[0]) { // Row exists
+        let updateCartQuery = 
+        `UPDATE shoppingcart
+        SET quantity=?
+        WHERE customer_id=? AND item_id=?`;
+        await conn.execute(updateCartQuery, [quantity, customer_id, item_id]);
+        return;
+    }
+    let addCartQuery = 'INSERT INTO shoppingcart (customer_id, item_id, quantity) VALUES (?,?,?)';
+    await conn.execute(addCartQuery, [customer_id, item_id, quantity]);
+    return;
+}
+
+async function removeCartItem(customer_id, item_id) {
+    let query = 'DELETE FROM shoppingcart WHERE customer_id=? AND item_id=?';
+    await conn.execute(query, [customer_id, item_id]);
+    return;
+}
+
+async function purchase(customer_id) {
+    let query = 
+    `SELECT sells.seller_id, sells.item_id, sells.stock, shoppingcart.quantity
+    FROM shoppingcart 
+    JOIN sells ON shoppingcart.item_id = sells.item_id
+    WHERE customer_id=?`;
+    let [rows, fields] = await conn.execute(query, [customer_id]);
+    let promises = []
+    for(let row of rows) {
+        let updateQuery = 
+        `UPDATE sells
+        SET stock=?
+        WHERE item_id=? AND seller_id=?`;
+        promises.push(conn.execute(updateQuery, [row.stock - row.quantity, row.item_id, row.seller_id]));
+    }
+    await Promise.all(promises);
+    let deleteQuery = 'DELETE FROM shoppingcart WHERE customer_id=?';
+    await conn.execute(deleteQuery, [customer_id]);
+    return;
+}
+
 module.exports = {
     getTables: getTables,
     getAllItems: getAllItems,
@@ -158,7 +212,11 @@ module.exports = {
     getItemsFromSeller: getItemsFromSeller,
     getCustomer: getCustomer,
     getSeller: getSeller,
+    getCart: getCart,
     addCustomer: addCustomer,
     addSeller: addSeller,
     addItem: addItem,
+    addToCart: addToCart,
+    removeCartItem: removeCartItem,
+    purchase: purchase,
 }

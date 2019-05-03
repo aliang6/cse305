@@ -14,8 +14,8 @@ export default class Header extends Component {
         super(props);
 
         this.state = {
-            customerId: null,
-            customerName: null,
+            customer_id: null,
+            customer_name: null,
             sellerId: null,
             sellerName: null,
         }
@@ -25,16 +25,16 @@ export default class Header extends Component {
     }
 
     updateCustomerId(json) {
-        let customerId = json.id;
-        if(customerId > 0) {
-            let customerName = json.first_name + " " + json.last_name;
+        let customer_id = json.id;
+        if(customer_id > 0) {
+            let customer_name = json.first_name + " " + json.last_name;
             this.setState({
-                customerId: customerId,
-                customerName: customerName,
+                customer_id: customer_id,
+                customer_name: customer_name,
                 sellerId: null,
                 sellerName: null,
             });
-            alert("Logged in as customer (" + customerId + ") " + customerName);
+            alert("Logged in as customer (" + customer_id + ") " + customer_name);
         } else {
             alert("Invalid login credentials");
         }
@@ -45,8 +45,8 @@ export default class Header extends Component {
         if(sellerId > 0) {
             let sellerName = json.seller_name;
             this.setState({
-                customerId: null,
-                customerName: null,
+                customer_id: null,
+                customer_name: null,
                 sellerId: sellerId,
                 sellerName: sellerName,
             });
@@ -70,11 +70,11 @@ export default class Header extends Component {
                             <Link className="header-btn" to="/items">Items</Link>
                             <Link className="header-btn" to="/sellers">Sellers</Link>
                             <Link className="header-btn" to="/login">Login</Link>
-                            {this.state.customerId && 
+                            {this.state.customer_id && 
                             <div className="customer-links">
                                 <Link className="header-btn" to="/cart">Cart</Link>
-                                <Link className="header-btn" to="/profile">Profile</Link>
-                                <p>Customer #{this.state.customerId + " " + this.state.customerName}</p>
+                                {/* <Link className="header-btn" to="/profile">Profile</Link> */}
+                                <p>Customer #{this.state.customer_id + " " + this.state.customer_name}</p>
                             </div>}
                             {this.state.sellerId && 
                             <div className="seller-links">
@@ -86,10 +86,31 @@ export default class Header extends Component {
                     </ul>
                 </div>
                 
-                <Route exact path="/" component={ Items } />
-                <Route path="/items" component={ Items } />
-                <Route path="/sellers" component={ Sellers } />
-                <Route path="/cart" component={ Cart } />
+                <Route exact path="/" 
+                    render={ (props) => 
+                    <Items { ...props } 
+                        customer_id = { this.state.customer_id } 
+                    /> }
+                 />
+                <Route path="/items" 
+                    render={ (props) => 
+                    <Items { ...props } 
+                        customer_id = { this.state.customer_id } 
+                    /> }
+                />
+                <Route path="/sellers" 
+                    render={ (props) => 
+                    <Sellers { ...props } 
+                        customer_id = { this.state.customer_id } 
+                    /> }
+                />
+                <Route path="/cart"  
+                    render={ (props) => 
+                    <Cart { ...props } 
+                        customer_id = { this.state.customer_id }
+                        customer_name = { this.state.customer_name }
+                    /> }
+                />
                 <Route path="/profile" component={ Cart } />
                 <Route path="/store" 
                     render={ (props) => 

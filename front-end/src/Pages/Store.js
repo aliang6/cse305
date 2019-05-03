@@ -73,9 +73,9 @@ export default class Store extends Component {
             });
             const json = await response.json(); 
             console.log(json);
-            this.setState({
-                //updated: true,
-            });
+            /*this.setState({
+                updated: true,
+            });*/
         } catch(err) {
             console.log(err);
             /*this.setState({

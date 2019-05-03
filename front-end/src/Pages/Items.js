@@ -12,6 +12,7 @@ export default class Items extends Component {
         this.state = {
             items: null,
             seller_id: null,
+            customer_id: null,
         }
     }
 
@@ -47,8 +48,6 @@ export default class Items extends Component {
             }
 
             const json = await response.json(); 
-            console.log(json);
-            console.log(json.items.length);
 
             this.setState({
                 items: json.items,
@@ -67,11 +66,14 @@ export default class Items extends Component {
                     {this.state.items && this.state.items.length === 0 && <h3>No items</h3>}
                     {this.state.items && this.state.items.map(item => (
                         <Item
+                            item_id = { item.id }
                             item_name = { item.item_name }
                             item_type = { item.category }
                             item_desc = { item.item_description }
                             item_price = { item.price }
                             item_stock = { item.stock }
+                            customer_id = { this.props.customer_id }
+                            addToCartHandler = { this.addToCart }
                             key = { item.id }
                         />
                     ))}

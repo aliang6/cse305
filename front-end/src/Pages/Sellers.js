@@ -59,7 +59,7 @@ export default class Sellers extends Component {
         return(
             <div>
                 <div className="sellers">
-                    {this.state.selectedSeller && <Items seller_id={ this.state.selectedSeller }/>}
+                    {this.state.selectedSeller && <Items customer_id={ this.props.customer_id } seller_id={ this.state.selectedSeller }/>}
                     <h2>All Sellers</h2>
                     <div className="seller-list">
                         {this.state.sellers && this.state.sellers.map(seller => (

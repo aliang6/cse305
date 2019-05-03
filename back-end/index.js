@@ -69,8 +69,8 @@ app.get('/itemtypes', async(req, res) => {
 app.get('/seller/:id', async(req, res) => {
     let seller_id = req.params.id;
     let results = await Promise.all([database.getItemsFromSeller(seller_id), database.getItemTypes()]);
-    items = results[0];
-    item_types = results[1];
+    let items = results[0];
+    let item_types = results[1];
     for(let item of items) {
         item.category = item_types[item.category - 1].category;
     }
@@ -154,5 +154,40 @@ app.post('/sellersignup', async(req, res) => {
     res.json(response);
 });
 
+// Add an item to a customer's cart
+app.post('/addtocart', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let item_id = req.body.item_id;
+    let quantity = req.body.quantity;
+    await database.addToCart(customer_id, item_id, quantity);
+    res.json({});
+});
+
+// Returns items from a customer's cart
+app.post('/getcart', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await Promise.all([database.getCart(customer_id), database.getItemTypes()]);
+    let items = results[0];
+    let item_types = results[1];
+    for(let item of items) {
+        item.category = item_types[item.category - 1].category;
+    }
+
+    res.json({ items: items });
+});
+
+// Remove specified item from a customer's cart
+app.post('/removecartitem', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let item_id = req.body.item_id;
+    await database.removeCartItem(customer_id, item_id);
+    res.json({});
+});
+
+app.post('/purchase', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    await database.purchase(customer_id);
+    res.json({});
+});
 
 let server = app.listen(PORT, '127.0.0.1', () => console.log(`Server running on http://127.0.0.1:${PORT}`));
