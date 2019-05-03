@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './Items.css';
+import './css/Items.css';
 import constants from '../constants';
 
 import Item from './Item/Item';
@@ -16,13 +16,18 @@ export default class Items extends Component {
     }
 
     componentWillMount() {
-        let sellerId = this.props.seller_id;
-        console.log("sellerId: " + sellerId);
-        this.retrieveItems(sellerId);
+        let seller_id = this.props.seller_id;
+        this.setState({
+            seller_id: seller_id,
+        })
+        this.retrieveItems(seller_id);
     }
 
     componentWillReceiveProps(props) {
-        const seller_id = props.seller_id;
+        let seller_id = props.seller_id;
+        this.setState({
+            seller_id: seller_id,
+        })
         this.retrieveItems(seller_id);
     }
 
@@ -43,6 +48,7 @@ export default class Items extends Component {
 
             const json = await response.json(); 
             console.log(json);
+            console.log(json.items.length);
 
             this.setState({
                 items: json.items,
@@ -55,8 +61,10 @@ export default class Items extends Component {
     render() {
         return(
             <div className="items">
-                <h1>Items Page</h1>
+                {!this.state.seller_id && <h2>All Items</h2>}
+                {this.state.seller_id && <h2>Seller's Items</h2>}
                 <div className="item-list">
+                    {this.state.items && this.state.items.length === 0 && <h3>No items</h3>}
                     {this.state.items && this.state.items.map(item => (
                         <Item
                             item_name = { item.item_name }
@@ -69,7 +77,6 @@ export default class Items extends Component {
                     ))}
                 </div>
             </div>
-            
         );
     }
 }

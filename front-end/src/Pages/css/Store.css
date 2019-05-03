@@ -1,0 +1,18 @@
+.store {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.store-items {
+    width: 75%;
+}
+
+.store-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    width: auto;
+}

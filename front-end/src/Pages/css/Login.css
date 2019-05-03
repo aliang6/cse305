@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-form {
+.login-page form {
     display: flex;
     justify-content: space-around;
     align-items: flex-end;

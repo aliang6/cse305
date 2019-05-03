@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './Login.css'
+import './css/Login.css'
 
 import constants from '../constants';
 
@@ -108,10 +108,10 @@ export default class Home extends Component {
                         <label>
                             Email: 
                             <input 
-                                type="text" 
-                                name="login_email" 
-                                value={ this.state.login_email } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "login_email" 
+                                value = { this.state.login_email } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <input type="submit" value="Submit" />
@@ -122,10 +122,10 @@ export default class Home extends Component {
                         <label>
                             Seller Name:
                             <input 
-                                type="text" 
-                                name="login_seller_name" 
-                                value={ this.state.login_seller_name } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "login_seller_name" 
+                                value = { this.state.login_seller_name } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <input type="submit" value="Submit" />
@@ -138,37 +138,37 @@ export default class Home extends Component {
                         <label>
                             First Name: 
                             <input 
-                                type="text" 
-                                name="signup_first_name" 
-                                value={ this.state.signup_first_name } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "signup_first_name" 
+                                value = { this.state.signup_first_name } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <label>
                             Last Name: 
                             <input 
-                                type="text" 
-                                name="signup_last_name" 
-                                value={ this.state.signup_last_name } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "signup_last_name" 
+                                value = { this.state.signup_last_name } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <label>
                             Email: 
                             <input 
-                                type="text" 
-                                name="signup_email" 
-                                value={ this.state.signup_email } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "signup_email" 
+                                value = { this.state.signup_email } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <label>
                             Phone Number: 
                             <input 
-                                type="text" 
-                                name="signup_phone" 
-                                value={ this.state.signup_phone } 
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "signup_phone" 
+                                value = { this.state.signup_phone } 
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <input type="submit" value="Submit" />
@@ -179,19 +179,19 @@ export default class Home extends Component {
                         <label>
                             Name:
                             <input 
-                                type="text" 
-                                name="signup_seller_name"
-                                value={ this.state.signup_seller_name }
-                                onChange={ this.handleInputChange }
+                                type = "text" 
+                                name = "signup_seller_name"
+                                value = { this.state.signup_seller_name }
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <label>
                             Description:
                             <input 
-                                type="text"
-                                name="signup_seller_desc" 
-                                value={ this.state.signup_seller_desc }
-                                onChange={ this.handleInputChange }
+                                type = "text"
+                                name = "signup_seller_desc" 
+                                value = { this.state.signup_seller_desc }
+                                onChange = { this.handleInputChange }
                             />
                         </label>
                         <input type="submit" value="Submit" />

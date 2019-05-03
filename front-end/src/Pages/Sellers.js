@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
 
-import './Sellers.css';
+import './css/Sellers.css';
 import constants from '../constants';
 
 import Items from './Items';
@@ -60,7 +60,7 @@ export default class Sellers extends Component {
             <div>
                 <div className="sellers">
                     {this.state.selectedSeller && <Items seller_id={ this.state.selectedSeller }/>}
-                    <h1>Sellers Page</h1>
+                    <h2>All Sellers</h2>
                     <div className="seller-list">
                         {this.state.sellers && this.state.sellers.map(seller => (
                             <Seller

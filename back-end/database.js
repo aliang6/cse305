@@ -24,7 +24,7 @@ async function getAllItems() {
     let query = 
     `SELECT item.id, item.item_name, item.item_description, item.category, sells.price, sells.stock
     FROM item 
-    RIGHT JOIN sells ON item.id = sells.item_id;`
+    RIGHT JOIN sells ON item.id = sells.item_id;`;
     let [rows, fields] = await conn.execute(query);
     return rows;
 }
@@ -74,7 +74,7 @@ async function addCustomer(first_name, last_name, email, phone) {
         return -1;
     }
 
-    let query = 'SELECT MAX(id) FROM customer'
+    let query = 'SELECT MAX(id) FROM customer';
     let [rows, fields] = await conn.execute(query);
     let id;
     if(rows[0]) {
@@ -94,7 +94,7 @@ async function addSeller(name, desc) {
         return -1;
     }
 
-    let query = 'SELECT MAX(id) FROM seller'
+    let query = 'SELECT MAX(id) FROM seller';
     let [rows, fields] = await conn.execute(query);
     let id;
     if(rows[0]) {
@@ -108,6 +108,48 @@ async function addSeller(name, desc) {
     return id;
 }
 
+async function addItem(seller_id, name, desc, price, stock, type) { // Adds if doesn't exist, otherwise updates existing item
+    let query = 
+    `SELECT id
+    FROM item
+    WHERE item_name=?`;
+    let [rows, fields] = await conn.execute(query, [name]);
+    if(rows[0]) { // Item exists
+        let id = rows[0].id;
+        console.log(id);
+        let updateItemQuery = 
+        `UPDATE item
+        SET item_description=?, category=?
+        WHERE id=?`;
+        let updateSellQuery = 
+        `UPDATE sells
+        SET price=?, stock=?
+        WHERE seller_id=? AND item_id=?`;
+        await Promise.all([
+            conn.execute(updateItemQuery, [desc, type, id]), 
+            conn.execute(updateSellQuery, [price, stock, seller_id, id]),
+        ]);
+        return;
+    } 
+
+    query = 'SELECT MAX(id) FROM item';
+    [rows, fields] = await conn.execute(query);
+    let id;
+    if(rows[0]) {
+        id = rows[0]['MAX(id)'] + 1;
+    } else {
+        id = 1;
+    }
+
+    let addItemQuery = 'INSERT INTO item (id, item_name, item_description, category) VALUES (?,?,?,?)';
+    let addSellQuery = 'INSERT INTO sells (seller_id, item_id, price, stock) VALUES (?,?,?,?)';
+    await Promise.all([
+        conn.execute(addItemQuery, [id, name, desc, type]), 
+        conn.execute(addSellQuery, [seller_id, id, price, stock]),
+    ]);
+    return;
+}
+
 module.exports = {
     getTables: getTables,
     getAllItems: getAllItems,
@@ -118,4 +160,5 @@ module.exports = {
     getSeller: getSeller,
     addCustomer: addCustomer,
     addSeller: addSeller,
+    addItem: addItem,
 }

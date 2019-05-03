@@ -6,6 +6,7 @@ import Items from '../Pages/Items';
 import Sellers from '../Pages/Sellers';
 import Cart from '../Pages/Cart';
 import Login from '../Pages/Login';
+import Store from '../Pages/Store';
 
 export default class Header extends Component {
 
@@ -77,7 +78,7 @@ export default class Header extends Component {
                             </div>}
                             {this.state.sellerId && 
                             <div className="seller-links">
-                                <Link className="header-btn" to="/listitem">List Item</Link>
+                                <Link className="header-btn" to="/store">Store</Link>
                                 <p>Seller #{this.state.sellerId + " " + this.state.sellerName}</p>
                             </div>
                             }
@@ -85,14 +86,24 @@ export default class Header extends Component {
                     </ul>
                 </div>
                 
-                <Route exact path="/" component={Items} />
-                <Route path="/items" component={Items} />
-                <Route path="/sellers" component={Sellers} />
-                <Route path="/cart" component={Cart} />
-                <Route path="/profile" component={Cart} />
+                <Route exact path="/" component={ Items } />
+                <Route path="/items" component={ Items } />
+                <Route path="/sellers" component={ Sellers } />
+                <Route path="/cart" component={ Cart } />
+                <Route path="/profile" component={ Cart } />
+                <Route path="/store" 
+                    render={ (props) => 
+                    <Store { ...props } 
+                        sellerId = { this.state.sellerId } 
+                        sellerName = { this.state.sellerName } 
+                    /> }
+                />
                 <Route path="/login" 
                     render={ (props) => 
-                    <Login {...props} updateCustomerId={ this.updateCustomerId } updateSellerId={ this.updateSellerId } /> }
+                    <Login { ...props } 
+                        updateCustomerId={ this.updateCustomerId } 
+                        updateSellerId={ this.updateSellerId } 
+                    /> }
                 />
             </Router>
             

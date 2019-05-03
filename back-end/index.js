@@ -44,7 +44,7 @@ app.get('/test', async(req, res) => {
     res.json();
 });
 
-// Return all items on the site
+// Return all items
 app.get('/items', async(req, res) => {
     let results = await Promise.all([database.getAllItems(), database.getItemTypes()]);
     let items = results[0]
@@ -55,11 +55,49 @@ app.get('/items', async(req, res) => {
     res.json({ items: items });
 });
 
+// Return all item types
+app.get('/itemtypes', async(req, res) => {
+    let item_types = await database.getItemTypes();
+    types = [];
+    for(let item_type of item_types) {
+        types.push(item_type.category);
+    }
+    res.json({ item_types: types });
+});
+
 // Return all items from the specified seller
 app.get('/seller/:id', async(req, res) => {
-    let sellerId = req.params.id;
-    items = await database.getItemsFromSeller(sellerId);
+    let seller_id = req.params.id;
+    let results = await Promise.all([database.getItemsFromSeller(seller_id), database.getItemTypes()]);
+    items = results[0];
+    item_types = results[1];
+    for(let item of items) {
+        item.category = item_types[item.category - 1].category;
+    }
     res.json({ items: items });
+});
+
+// Add an item to the database
+app.post('/additem', async(req, res) => {
+    console.log(req.body);
+    let seller_id = req.body.seller_id;
+    let item_name = req.body.item_name;
+    let item_desc =  req.body.item_desc;
+    let item_price = req.body.item_price;
+    let item_stock = req.body.item_stock;
+    let item_type =  req.body.item_type;
+
+    let item_types = await database.getItemTypes();
+    for(let row of item_types) {
+        if(item_type === row.category) {
+            item_type = row.id;
+            break;
+        }
+    }
+
+    await database.addItem(seller_id, item_name, item_desc, item_price, item_stock, item_type); // If exists, otherwise updates existing
+
+    res.json({});
 });
 
 // Return all sellers on the site
@@ -102,8 +140,8 @@ app.post('/customersignup', async(req, res) => {
     let last_name = req.body.last_name;
     let email = (req.body.email).toLowerCase();
     let phone = req.body.phone;
-    let customerId = await database.addCustomer(first_name, last_name, email, phone); // -1 if err
-    let response = { id: customerId, first_name: first_name, last_name: last_name };
+    let customer_id = await database.addCustomer(first_name, last_name, email, phone); // -1 if err
+    let response = { id: customer_id, first_name: first_name, last_name: last_name };
     res.json(response);
 });
 
@@ -111,8 +149,8 @@ app.post('/customersignup', async(req, res) => {
 app.post('/sellersignup', async(req, res) => {
     let name = req.body.name;
     let desc = req.body.desc;
-    let sellerId = await database.addSeller(name, desc); // -1 if err
-    let response = { id: sellerId, seller_name: name };
+    let seller_id = await database.addSeller(name, desc); // -1 if err
+    let response = { id: seller_id, seller_name: name };
     res.json(response);
 });
 
