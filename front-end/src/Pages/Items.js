@@ -73,6 +73,7 @@ export default class Items extends Component {
                             item_price = { item.price }
                             item_stock = { item.stock }
                             customer_id = { this.props.customer_id }
+                            seller_id = { this.props.seller_id }
                             addToCartHandler = { this.addToCart }
                             key = { item.id }
                         />

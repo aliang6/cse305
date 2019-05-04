@@ -77,9 +77,8 @@ app.get('/seller/:id', async(req, res) => {
     res.json({ items: items });
 });
 
-// Add an item to the database
-app.post('/additem', async(req, res) => {
-    console.log(req.body);
+// Add a seller listing to the database
+app.post('/addlisting', async(req, res) => {
     let seller_id = req.body.seller_id;
     let item_name = req.body.item_name;
     let item_desc =  req.body.item_desc;
@@ -95,14 +94,13 @@ app.post('/additem', async(req, res) => {
         }
     }
 
-    let response = await database.addItem(seller_id, item_name, item_desc, item_price, item_stock, item_type); // If exists, otherwise updates existing
+    let response = await database.addItem(seller_id, item_name, item_desc, item_price, item_stock, item_type);
 
     res.json({ success: response });
 });
 
-// Update an item to the database if
-app.post('/updateselleritem', async(req, res) => {
-    console.log(req.body);
+// Update a seller's listing in the database if it exists
+app.post('/updatelisting', async(req, res) => {
     let seller_id = req.body.seller_id;
     let item_id = req.body.item_id;
     let item_name = req.body.item_name;
@@ -110,7 +108,6 @@ app.post('/updateselleritem', async(req, res) => {
     let item_price = req.body.item_price;
     let item_stock = req.body.item_stock;
     let item_type =  req.body.item_type;
-    console.log(item_type);
 
     let item_types = await database.getItemTypes();
     for(let row of item_types) {
@@ -120,9 +117,17 @@ app.post('/updateselleritem', async(req, res) => {
         }
     }
 
-    // If exists, otherwise updates existing
     let response = await database.updateSellerItem(seller_id, item_id, item_name, item_desc, item_price, item_stock, item_type);
-    console.log(resopnse);
+
+    res.json({ success: response });
+});
+
+// Remove a seller's listing on the database if it exists
+app.post('/removelisting', async(req, res) => {
+    let seller_id = req.body.seller_id;
+    let item_id = req.body.item_id;
+
+    let response = await database.removeSellerItem(seller_id, item_id);
 
     res.json({ success: response });
 });

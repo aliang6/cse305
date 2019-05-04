@@ -22,12 +22,14 @@ export default class Store extends Component {
             update_item_price: '',
             update_item_stock: '',
             update_item_type: '',
+            remove_item_id: '',
             updated: true,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addItem = this.addItem.bind(this);
         this.updateItem = this.updateItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
     }
 
     componentWillMount() {
@@ -75,7 +77,7 @@ export default class Store extends Component {
             this.setState({
                 updated: false,
             });
-            const response = await fetch(constants.API.hostname + '/additem', {
+            const response = await fetch(constants.API.hostname + '/addlisting', {
                 method: 'POST',
                 headers: { 'Content-Type':'application/json' },
                 body: JSON.stringify(body),
@@ -108,7 +110,35 @@ export default class Store extends Component {
             this.setState({
                 updated: false,
             });
-            const response = await fetch(constants.API.hostname + '/updateselleritem', {
+            const response = await fetch(constants.API.hostname + '/updatelisting', {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json' },
+                body: JSON.stringify(body),
+            });
+            const json = await response.json(); 
+            console.log(json);
+            this.setState({
+                updated: true,
+            });
+        } catch(err) {
+            console.log(err);
+            this.setState({
+                updated: true,
+            });
+        }
+    }
+
+    async removeItem(event) {
+        event.preventDefault();
+        try {
+            let body = {
+                seller_id: this.props.sellerId,
+                item_id: this.state.remove_item_id,
+            }
+            this.setState({
+                updated: false,
+            });
+            const response = await fetch(constants.API.hostname + '/removelisting', {
                 method: 'POST',
                 headers: { 'Content-Type':'application/json' },
                 body: JSON.stringify(body),
@@ -237,6 +267,19 @@ export default class Store extends Component {
                                 </select>
                             </label>
                             <input type="submit" value="Submit" />
+                        </form>
+                        <h3>Remove Item</h3>
+                        <form className="store-form" onSubmit={ this.removeItem }>
+                            <label>
+                                ID:
+                                <input 
+                                    type = "number"
+                                    name = "remove_item_id"
+                                    value = { this.state.remove_item_id }
+                                    onChange = { this.handleInputChange }
+                                />
+                                <input type="submit" value="Submit" />
+                            </label>
                         </form>
                     </div>
                 </div>

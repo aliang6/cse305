@@ -174,6 +174,15 @@ async function updateSellerItem(seller_id, item_id, name, desc, price, stock, ty
     return true;
 }
 
+async function removeSellerItem(seller_id, item_id) { 
+    let removeQuery =
+    `DELETE FROM sells
+    where seller_id=? AND item_id=?`;
+
+    await conn.execute(removeQuery, [seller_id, item_id]);
+    return;
+}
+
 async function addToCart(customer_id, item_id, quantity) {
     let query = 'SELECT * FROM shoppingcart WHERE customer_id=? AND item_id=?';
     let [row, fields] = await conn.execute(query, [customer_id, item_id]);
@@ -230,6 +239,7 @@ module.exports = {
     addSeller: addSeller,
     addItem: addItem,
     updateSellerItem: updateSellerItem,
+    removeSellerItem: removeSellerItem,
     addToCart: addToCart,
     removeCartItem: removeCartItem,
     purchase: purchase,
