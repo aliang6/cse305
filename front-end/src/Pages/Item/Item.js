@@ -50,6 +50,7 @@ export default class Item extends Component {
     render() {
         return(
             <div className='item'>
+                <div className='item-id'>ID: { this.props.item_id }</div>
                 <div className='item-name'>Name: { this.props.item_name }</div>
                 <div className='item-type'>Type: { this.props.item_type }</div>
                 <div className='item-desc'>Description: { this.props.item_desc }</div>

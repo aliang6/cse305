@@ -120,30 +120,16 @@ async function addSeller(name, desc) {
 }
 
 async function addItem(seller_id, name, desc, price, stock, type) { // Adds if doesn't exist, otherwise updates existing item
-    let query = 
+    /*let query = 
     `SELECT id
     FROM item
     WHERE item_name=?`;
     let [rows, fields] = await conn.execute(query, [name]);
     if(rows[0]) { // Item exists
-        let id = rows[0].id;
-        console.log(id);
-        let updateItemQuery = 
-        `UPDATE item
-        SET item_description=?, category=?
-        WHERE id=?`;
-        let updateSellQuery = 
-        `UPDATE sells
-        SET price=?, stock=?
-        WHERE seller_id=? AND item_id=?`;
-        await Promise.all([
-            conn.execute(updateItemQuery, [desc, type, id]), 
-            conn.execute(updateSellQuery, [price, stock, seller_id, id]),
-        ]);
-        return;
-    } 
+        return false;
+    } */
 
-    query = 'SELECT MAX(id) FROM item';
+    let query = 'SELECT MAX(id) FROM item';
     [rows, fields] = await conn.execute(query);
     let id;
     if(rows[0]) {
@@ -158,7 +144,34 @@ async function addItem(seller_id, name, desc, price, stock, type) { // Adds if d
         conn.execute(addItemQuery, [id, name, desc, type]), 
         conn.execute(addSellQuery, [seller_id, id, price, stock]),
     ]);
-    return;
+    return true;
+}
+
+async function updateSellerItem(seller_id, item_id, name, desc, price, stock, type) { // Update item's price and stock if exists
+    let query = 
+    `SELECT *
+    FROM sells
+    WHERE seller_id=? AND item_id=?`;
+    let [rows, fields] = await conn.execute(query, [seller_id, item_id]);
+    if(!rows[0]){
+        return false;
+    }
+
+    let updateItemQuery = 
+    `UPDATE item
+    SET item_name=?, item_description=?, category=?
+    WHERE id=?`;
+
+    let updateSellQuery = 
+    `UPDATE sells
+    SET price=?, stock=?
+    WHERE seller_id=? AND item_id=?`;
+
+    await Promise.all([
+        conn.execute(updateItemQuery, [name, desc, type, item_id]), 
+        conn.execute(updateSellQuery, [price, stock, seller_id, item_id]),
+    ]);
+    return true;
 }
 
 async function addToCart(customer_id, item_id, quantity) {
@@ -216,6 +229,7 @@ module.exports = {
     addCustomer: addCustomer,
     addSeller: addSeller,
     addItem: addItem,
+    updateSellerItem: updateSellerItem,
     addToCart: addToCart,
     removeCartItem: removeCartItem,
     purchase: purchase,

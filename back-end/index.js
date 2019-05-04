@@ -47,8 +47,8 @@ app.get('/test', async(req, res) => {
 // Return all items
 app.get('/items', async(req, res) => {
     let results = await Promise.all([database.getAllItems(), database.getItemTypes()]);
-    let items = results[0]
-    let item_types = results[1]
+    let items = results[0];
+    let item_types = results[1];
     for(let item of items) {
         item.category = item_types[item.category - 1].category;
     }
@@ -95,9 +95,36 @@ app.post('/additem', async(req, res) => {
         }
     }
 
-    await database.addItem(seller_id, item_name, item_desc, item_price, item_stock, item_type); // If exists, otherwise updates existing
+    let response = await database.addItem(seller_id, item_name, item_desc, item_price, item_stock, item_type); // If exists, otherwise updates existing
 
-    res.json({});
+    res.json({ success: response });
+});
+
+// Update an item to the database if
+app.post('/updateselleritem', async(req, res) => {
+    console.log(req.body);
+    let seller_id = req.body.seller_id;
+    let item_id = req.body.item_id;
+    let item_name = req.body.item_name;
+    let item_desc =  req.body.item_desc;
+    let item_price = req.body.item_price;
+    let item_stock = req.body.item_stock;
+    let item_type =  req.body.item_type;
+    console.log(item_type);
+
+    let item_types = await database.getItemTypes();
+    for(let row of item_types) {
+        if(item_type === row.category) {
+            item_type = row.id;
+            break;
+        }
+    }
+
+    // If exists, otherwise updates existing
+    let response = await database.updateSellerItem(seller_id, item_id, item_name, item_desc, item_price, item_stock, item_type);
+    console.log(resopnse);
+
+    res.json({ success: response });
 });
 
 // Return all sellers on the site
