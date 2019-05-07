@@ -205,25 +205,86 @@ async function removeCartItem(customer_id, item_id) {
     return;
 }
 
-async function purchase(customer_id) {
-    let query = 
-    `SELECT sells.seller_id, sells.item_id, sells.stock, shoppingcart.quantity
+async function purchase(customer_id, address_id, card_number, card_expiry_date) {
+    // Retrieve max id from purchase
+    let query = 'SELECT MAX(purchase_id) FROM purchase';
+    let [rows, fields] = await conn.execute(query);
+    let id;
+    if(rows[0]) {
+        id = rows[0]['MAX(purchase_id)'] + 1;
+    } else {
+        id = 1;
+    }
+    
+    query = 
+    `SELECT *
     FROM shoppingcart 
     JOIN sells ON shoppingcart.item_id = sells.item_id
     WHERE customer_id=?`;
-    let [rows, fields] = await conn.execute(query, [customer_id]);
+    [rows, fields] = await conn.execute(query, [customer_id]);
     let promises = []
+
+    
+
+    // Create purchase date string
+    const date = new Date();
+    const purchase_date = date.getFullYear() + "-" + String(date.getMonth()).padStart(2, '0') + "-" + String(date.getDate()).padStart(2, '0');
+
     for(let row of rows) {
         let updateQuery = 
         `UPDATE sells
         SET stock=?
         WHERE item_id=? AND seller_id=?`;
+        console.log(row);
         promises.push(conn.execute(updateQuery, [row.stock - row.quantity, row.item_id, row.seller_id]));
+        let addPurchaseQuery =
+        `INSERT INTO purchase
+        (purchase_id, customer_id, item_id, quantity, total_cost, seller_id, purchase_date, address_id, card_number, card_expiry_date)
+        VALUES (?,?,?,?,?,?,?,?,?,?)`;
+        promises.push(
+            conn.execute(
+                addPurchaseQuery, 
+                [id++, customer_id, row.item_id, row.quantity, row.quantity*row.price, row.seller_id, purchase_date, address_id, card_number, card_expiry_date]));
+        
     }
     await Promise.all(promises);
     let deleteQuery = 'DELETE FROM shoppingcart WHERE customer_id=?';
     await conn.execute(deleteQuery, [customer_id]);
     return;
+}
+
+async function getCustomerPurchases(customer_id) {
+    let query = 
+    `SELECT * 
+    FROM purchase 
+    JOIN item ON purchase.item_id = item.id 
+    JOIN sells ON sells.item_id = item.id 
+    JOIN seller ON sells.seller_id = seller.id
+    JOIN address ON purchase.customer_id = address.customer_id AND purchase.address_id = address.id
+    WHERE purchase.customer_id=?`;
+    let [rows, fields] = await conn.execute(query, [customer_id]);
+    return rows;
+}
+
+async function addAddress(customer_id, address_type, address1, address2, apt, city, zip) {
+    let query = 'SELECT MAX(id) FROM address';
+    let [rows, fields] = await conn.execute(query);
+    let id;
+    if(rows[0]) {
+        id = rows[0]['MAX(id)'] + 1;
+    } else {
+        id = 1;
+    }
+
+    let insertQuery = 'INSERT INTO address (customer_id, id, address_type, address1, address2, apt, city, zip) VALUES (?,?,?,?,?,?,?,?)';
+    await conn.execute(insertQuery, [customer_id, id, address_type, address1, address2, apt, city, zip]);
+    return;
+}
+
+async function getAddresses(customer_id) {
+    let query = `SELECT * FROM address WHERE customer_id=?`;
+    let [rows, fields] = await conn.execute(query, [customer_id]);
+    return rows;
 }
 
 module.exports = {
@@ -235,12 +296,15 @@ module.exports = {
     getCustomer: getCustomer,
     getSeller: getSeller,
     getCart: getCart,
-    addCustomer: addCustomer,
-    addSeller: addSeller,
-    addItem: addItem,
+    getCustomerPurchases: getCustomerPurchases,
+    getAddresses: getAddresses,
     updateSellerItem: updateSellerItem,
     removeSellerItem: removeSellerItem,
-    addToCart: addToCart,
     removeCartItem: removeCartItem,
     purchase: purchase,
+    addToCart: addToCart,
+    addCustomer: addCustomer,
+    addSeller: addSeller,
+    addItem: addItem, 
+    addAddress: addAddress,
 }

@@ -218,8 +218,36 @@ app.post('/removecartitem', async(req, res) => {
 
 app.post('/purchase', async(req, res) => {
     let customer_id = req.body.customer_id;
-    await database.purchase(customer_id);
+    let address_id = req.body.address_id;
+    let card_number = req.body.card_number;
+    let card_expiry_date = req.body.card_expiry_date;
+    await database.purchase(customer_id, address_id, card_number, card_expiry_date);
     res.json({});
+});
+
+app.post('/getpurchases', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await database.getCustomerPurchases(customer_id);
+    res.json({ purchases: results })
+});
+
+app.post('/addaddress', async(req, res) => {
+    console.log(req.body);
+    let customer_id = req.body.customer_id;
+    let address_type = req.body.address_type;
+    let address1 = req.body.address1;
+    let address2 = req.body.address2 ? req.body.address2 : NULL;
+    let apt = req.body.apt ? req.body.apt : NULL;
+    let city = req.body.city;
+    let zip = req.body.zip;
+    await database.addAddress(customer_id, address_type, address1, address2, apt, city, zip);
+    return res.json({});
+});
+
+app.post('/getaddresses', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await database.getAddresses(customer_id);
+    res.json({ addresses: results });
 });
 
 let server = app.listen(PORT, '127.0.0.1', () => console.log(`Server running on http://127.0.0.1:${PORT}`));

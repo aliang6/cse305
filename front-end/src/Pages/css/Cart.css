@@ -1,6 +1,30 @@
-.cart-items {
+.cart {
     display: flex;
     justify-content: space-around;
+    align-items: flex-start;
+}
+
+.cart-items {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    flex-direction: column;
     flex-wrap: wrap;
+    width: 50%;
+}
+
+.purchase-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    width: auto;
+}
+
+.purchase-section form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-bottom: 50px;
 }
