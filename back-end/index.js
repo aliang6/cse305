@@ -250,4 +250,11 @@ app.post('/getaddresses', async(req, res) => {
     res.json({ addresses: results });
 });
 
+app.post('/search', async(req, res) => {
+   let query = req.body.q;
+   let results = await database.searchItems(query);
+   console.log(results);
+   res.json({ items: results });
+});
+
 let server = app.listen(PORT, '127.0.0.1', () => console.log(`Server running on http://127.0.0.1:${PORT}`));

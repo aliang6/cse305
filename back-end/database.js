@@ -240,6 +240,15 @@ async function getAddresses(customer_id) {
     return rows;
 }
 
+async function searchItems(search_query) {
+    let query = `SELECT * 
+                FROM item 
+                RIGHT JOIN sells ON item.id = sells.item_id
+                WHERE item_name OR item_description LIKE ?`;
+    let [rows, fields] = await conn.execute(query, ['%' + search_query + '%']);
+    return rows;
+}
+
 module.exports = {
     getTables: getTables,
     getAllItems: getAllItems,
@@ -260,4 +269,5 @@ module.exports = {
     addSeller: addSeller,
     addItem: addItem, 
     addAddress: addAddress,
+    searchItems: searchItems,
 }
