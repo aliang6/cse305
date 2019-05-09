@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS seller (
     id INT NOT NULL AUTO_INCREMENT,
     seller_name CHAR(64) NOT NULL,
     seller_description CHAR(255) NOT NULL,
-    seller_pwd CHAR(255) NOT NULL,
+    pwd CHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
