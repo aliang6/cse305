@@ -50,6 +50,7 @@ export default class Shipments extends Component {
                         <p>Shipment id: {shipment.shipment_id}</p>
                         <p>Item: {shipment.item_name}</p>
                         <p>Address: {shipment.address1 + " "} {shipment.address2 !== null && shipment.address2 + " "}</p>
+                        <p>Carrier: {shipment.carrier_name}</p>
                         <p>Tracking number: {shipment.tracking_number}</p>
                         <p>Process date: {shipment.process_date}</p>
                         <p>Arrival date: {shipment.arrival_date}</p>

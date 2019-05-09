@@ -162,7 +162,8 @@ async function getCustomerPurchases(customer_id) {
 }
 
 async function getCustomerShipments(customer_id) {
-    let query = `SELECT * 
+    let query = `SELECT shippedto.shipment_id, shippedto.tracking_number, shippedto.process_date, shippedto.arrival_date, 
+                    shippedto.shipping_fee, item.item_name, carrier.carrier_name, address.address1, address.address2 
                 FROM shippedto
                 JOIN item ON shippedto.item_id = item.id 
                 JOIN carrier ON shippedto.carrier_id = carrier.id

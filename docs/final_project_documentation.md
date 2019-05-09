@@ -1,6 +1,6 @@
 # CSE 305 Final Project
 
-### Johnny So (111158276)
+### Andy Liang (111008856), Johnny So (111158276)
 
 
 
@@ -319,7 +319,7 @@ As these relations represent Relationships from the ER diagram, they must includ
     INSERT INTO customer 
     (id, first_name, last_name, email, phone) 
     VALUES 
-    (?,?,?,?,?);
+    (?,?,?,?,?,?);
     ```
 
 - Add a seller
@@ -354,13 +354,29 @@ As these relations represent Relationships from the ER diagram, they must includ
     (?,?,?);
     ```
 
-- Add to a customer's list of addresses
+- Add to a customer's addresses
 
   - ```sql
     INSERT INTO address 
     (customer_id, id, address_type, address1, address2, apt, city, zip) 
     VALUES 
     (?,?,?,?,?,?,?,?);
+    ```
+
+- Add to a customer's purchases
+
+  - ```sql
+    INSERT INTO purchase
+    (purchase_id, customer_id, item_id, quantity, total_cost, seller_id, purchase_date, address_id, card_number, card_expiry_date)
+    VALUES (?,?,?,?,?,?,?,?,?,?);
+    ```
+
+- Add to a customer's shipments
+
+  - ```sql
+    INSERT INTO shippedto
+    (shipment_id, item_id, customer_id, purchase_id, address_id, carrier_id, tracking_number, process_date, arrival_date, shipping_fee)
+    VALUES (?,?,?,?,?,?,?,?,?,?);
     ```
 
 ### Retrieve
@@ -437,6 +453,19 @@ As these relations represent Relationships from the ER diagram, they must includ
     	purchase.customer_id = address.customer_id AND 
     	purchase.address_id = address.id
     WHERE purchase.customer_id=?;
+    ```
+
+- Retrieve all of a customer's shipments
+
+  - ```sql
+    SELECT shipment.shipment_id, shipment.tracking_number, shipment.process_date, shipment.arrival_date, shipment.shipping_fee, item.item_name, carrier.carrier_name, address.address1, address.address2
+    FROM shipment
+    JOIN item ON shipment.item_id = item.id 
+    JOIN carrier ON shipment.carrier_id = carrier.id
+    JOIN address ON 
+    shipment.customer_id = address.customer_id AND 
+    shipment.address_id = address.id
+    WHERE shipment.customer_id=?;
     ```
 
 ### Update
