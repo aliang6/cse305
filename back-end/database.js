@@ -193,12 +193,12 @@ async function purchase(customer_id, address_id, card_number, card_expiry_date) 
         let updateQuery = `UPDATE sells
                             SET stock=?
                             WHERE item_id=? AND seller_id=?`;
-        console.log(row);
         promises.push(conn.execute(updateQuery, [row.stock - row.quantity, row.item_id, row.seller_id]));
         let addPurchaseQuery = `INSERT INTO purchase
                                 (purchase_id, customer_id, item_id, quantity, total_cost, seller_id, 
                                     purchase_date, address_id, card_number, card_expiry_date)
                                 VALUES (?,?,?,?,?,?,?,?,?,?)`;
+
         promises.push(
             conn.execute(
                 addPurchaseQuery, 

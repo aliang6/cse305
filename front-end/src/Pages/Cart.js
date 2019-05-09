@@ -134,7 +134,7 @@ export default class Cart extends Component {
             let json = await response.json(); 
             this.setState({
                 addresses: json.addresses,
-                selected_address: json.addresses[0] ? json.addresses[0] : null,
+                selected_address: json.addresses[0] ? json.addresses[0].id : null,
             });
         } catch(err) {
             console.log(err);
