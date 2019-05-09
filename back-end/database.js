@@ -17,25 +17,31 @@ var conn;
 
 
 // Create
-async function addCustomer(first_name, last_name, email, phone) {
-    let results = await getCustomer(email);
-    if (results[0]) { // Customer exists
+async function addCustomer(first_name, last_name, email, phone, pwd) {
+    let query = `SELECT id, first_name, last_name
+                FROM customer 
+                WHERE email=?`;
+    let [rows, fields] = await conn.execute(query, [email]);
+    if (rows[0]) { // Customer exists
         return -1;
     }
     
-    let query = 'INSERT INTO customer (id, first_name, last_name, email, phone) VALUES (?,?,?,?,?)';
-    [rows, fields] = await conn.execute(query, [0, first_name, last_name, email, phone]);
+    query = 'INSERT INTO customer (id, first_name, last_name, email, phone, pwd) VALUES (?,?,?,?,?,?)';
+    [rows, fields] = await conn.execute(query, [0, first_name, last_name, email, phone, pwd]);
     return rows.insertId;
 }
 
-async function addSeller(name, desc) {
-    let results = await getSeller(name);
-    if (results[0]) { // Seller exists
+async function addSeller(name, desc, pwd) {
+    let query = `SELECT id 
+                FROM seller 
+                WHERE seller_name=?`;
+    let [rows, fields] = await conn.execute(query, [name]);
+    if (rows[0]) { // Seller exists
         return -1;
     }
     
-    let query = 'INSERT INTO seller (id, seller_name, seller_description) VALUES (?,?,?)';
-    [rows, fields] = await conn.execute(query, [0, name, desc]);
+    query = 'INSERT INTO seller (id, seller_name, seller_description, pwd) VALUES (?,?,?,?)';
+    [rows, fields] = await conn.execute(query, [0, name, desc, pwd]);
     return rows.insertId;
 }
 
@@ -114,19 +120,19 @@ async function getAllSellers() {
     return rows;
 }
 
-async function getCustomer(email) {
+async function getCustomer(email, pwd) {
     let query = `SELECT id, first_name, last_name
                 FROM customer 
-                WHERE email=?`;
-    let [rows, fields] = await conn.execute(query, [email]);
+                WHERE email=? AND pwd=?`;
+    let [rows, fields] = await conn.execute(query, [email, pwd]);
     return rows;
 }
 
-async function getSeller(name) {
+async function getSeller(name, pwd) {
     let query = `SELECT id 
                 FROM seller 
-                WHERE seller_name=?`;
-    let [rows, fields] = await conn.execute(query, [name]);
+                WHERE seller_name=? AND pwd=?`;
+    let [rows, fields] = await conn.execute(query, [name, pwd]);
     return rows;
 }
 
@@ -141,7 +147,8 @@ async function getCart(customer_id) {
 }
 
 async function getCustomerPurchases(customer_id) {
-    let query = `SELECT * 
+    let query = `SELECT purchase.purchase_id, purchase.purchase_date, purchase.card_number, purchase.quantity, 
+                    address.address1, address.address2, seller.seller_name, item.item_name, sells.price
                 FROM purchase 
                 JOIN item ON purchase.item_id = item.id 
                 JOIN sells ON sells.item_id = item.id 
@@ -150,6 +157,19 @@ async function getCustomerPurchases(customer_id) {
                     purchase.customer_id = address.customer_id AND 
                     purchase.address_id = address.id
                 WHERE purchase.customer_id=?`;
+    let [rows, fields] = await conn.execute(query, [customer_id]);
+    return rows;
+}
+
+async function getCustomerShipments(customer_id) {
+    let query = `SELECT * 
+                FROM shippedto
+                JOIN item ON shippedto.item_id = item.id 
+                JOIN carrier ON shippedto.carrier_id = carrier.id
+                JOIN address ON 
+                    shippedto.customer_id = address.customer_id AND 
+                    shippedto.address_id = address.id
+                WHERE shippedto.customer_id=?`;
     let [rows, fields] = await conn.execute(query, [customer_id]);
     return rows;
 }
@@ -288,6 +308,7 @@ module.exports = {
     getSeller: getSeller,
     getCart: getCart,
     getCustomerPurchases: getCustomerPurchases,
+    getCustomerShipments: getCustomerShipments,
     getAddresses: getAddresses,
     getCarriers: getCarriers,
     searchItems: searchItems,

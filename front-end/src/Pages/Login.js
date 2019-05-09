@@ -11,13 +11,17 @@ export default class Home extends Component {
 
         this.state = {
             login_email: '',
+            login_customer_pwd: '',
             login_seller_name: '',
+            login_seller_pwd: '',
             signup_first_name: '',
             signup_last_name: '',
             signup_email: '',
             signup_phone: '',
+            signup_customer_pwd: '',
             signup_seller_name: '',
             signup_seller_desc: '',
+            signup_seller_pwd: '',
         };
         
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -42,6 +46,7 @@ export default class Home extends Component {
         event.preventDefault();
         let body = {
             email: this.state.login_email,
+            pwd: this.state.login_customer_pwd,
         }
         const response = await fetch(constants.API.hostname + '/customerlogin', {
             method: 'POST',
@@ -55,7 +60,8 @@ export default class Home extends Component {
     async sellerLogin(event) {
         event.preventDefault();
         let body = {
-            seller_name: this.state.login_seller_name
+            seller_name: this.state.login_seller_name,
+            pwd: this.state.login_seller_pwd,
         }
         const response = await fetch(constants.API.hostname + '/sellerlogin', {
             method: 'POST',
@@ -73,7 +79,8 @@ export default class Home extends Component {
             first_name: this.state.signup_first_name,
             last_name: this.state.signup_last_name,
             email: this.state.signup_email,
-            phone: this.state.signup_phone
+            phone: this.state.signup_phone,
+            pwd: this.state.signup_customer_pwd,
         }
         const response = await fetch(constants.API.hostname + '/customersignup', {
             method: 'POST',
@@ -89,6 +96,7 @@ export default class Home extends Component {
         let body = {
             name: this.state.signup_seller_name,
             desc: this.state.signup_seller_desc,
+            pwd: this.state.signup_seller_pwd,
         }
         const response = await fetch(constants.API.hostname + '/sellersignup', {
             method: 'POST',
@@ -114,6 +122,15 @@ export default class Home extends Component {
                                 onChange = { this.handleInputChange }
                             />
                         </label>
+                        <label>
+                            Password: 
+                            <input 
+                                type = "text" 
+                                name = "login_customer_pwd" 
+                                value = { this.state.login_customer_pwd } 
+                                onChange = { this.handleInputChange }
+                            />
+                        </label>
                         <input type="submit" value="Submit" />
                     </form>
 
@@ -125,6 +142,15 @@ export default class Home extends Component {
                                 type = "text" 
                                 name = "login_seller_name" 
                                 value = { this.state.login_seller_name } 
+                                onChange = { this.handleInputChange }
+                            />
+                        </label>
+                        <label>
+                            Password: 
+                            <input 
+                                type = "text" 
+                                name = "login_seller_pwd" 
+                                value = { this.state.login_seller_pwd } 
                                 onChange = { this.handleInputChange }
                             />
                         </label>
@@ -171,6 +197,15 @@ export default class Home extends Component {
                                 onChange = { this.handleInputChange }
                             />
                         </label>
+                        <label>
+                            Password: 
+                            <input 
+                                type = "text" 
+                                name = "signup_customer_pwd" 
+                                value = { this.state.signup_customer_pwd } 
+                                onChange = { this.handleInputChange }
+                            />
+                        </label>
                         <input type="submit" value="Submit" />
                     </form>
 
@@ -191,6 +226,15 @@ export default class Home extends Component {
                                 type = "text"
                                 name = "signup_seller_desc" 
                                 value = { this.state.signup_seller_desc }
+                                onChange = { this.handleInputChange }
+                            />
+                        </label>
+                        <label>
+                            Password: 
+                            <input 
+                                type = "text" 
+                                name = "signup_seller_pwd" 
+                                value = { this.state.signup_seller_pwd } 
                                 onChange = { this.handleInputChange }
                             />
                         </label>

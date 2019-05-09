@@ -6,6 +6,7 @@ import Items from '../Pages/Items';
 import Sellers from '../Pages/Sellers';
 import Cart from '../Pages/Cart';
 import Purchases from '../Pages/Purchases';
+import Shipments from '../Pages/Shipments';
 import Login from '../Pages/Login';
 import Store from '../Pages/Store';
 
@@ -75,6 +76,7 @@ export default class Header extends Component {
                                 <Link className="header-btn" to="/cart">Cart</Link>
                                 {/* <Link className="header-btn" to="/profile">Profile</Link> */}
                                 <Link className="header-btn" to="/purchases">Purchases</Link>
+                                <Link className="header-btn" to="/shipments">Shipments</Link>
                                 <p>Customer #{this.state.customer_id + " " + this.state.customer_name}</p>
                             </div>}
                             {this.state.sellerId && 
@@ -115,6 +117,13 @@ export default class Header extends Component {
                 <Route path="/purchases"  
                     render={ (props) => 
                     <Purchases { ...props } 
+                        customer_id = { this.state.customer_id }
+                        customer_name = { this.state.customer_name }
+                    /> }
+                />
+                <Route path="/shipments"  
+                    render={ (props) => 
+                    <Shipments { ...props } 
                         customer_id = { this.state.customer_id }
                         customer_name = { this.state.customer_name }
                     /> }

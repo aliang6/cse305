@@ -45,7 +45,8 @@ app.post('/customersignup', async(req, res) => {
     let last_name = req.body.last_name;
     let email = (req.body.email).toLowerCase();
     let phone = req.body.phone;
-    let customer_id = await database.addCustomer(first_name, last_name, email, phone); // -1 if err
+    let pwd = req.body.pwd;
+    let customer_id = await database.addCustomer(first_name, last_name, email, phone, pwd); // -1 if err
     let response = { id: customer_id, first_name: first_name, last_name: last_name };
     res.json(response);
 });
@@ -53,7 +54,8 @@ app.post('/customersignup', async(req, res) => {
 // Return id and name for customer login
 app.post('/customerlogin', async(req, res) => {
     let email = (req.body.email).toLowerCase();
-    let results = await database.getCustomer(email);
+    let pwd = req.body.pwd;
+    let results = await database.getCustomer(email, pwd);
     let response;
     if(results[0]){
         let customer = results[0];
@@ -84,7 +86,8 @@ app.post('/addaddress', async(req, res) => {
 app.post('/sellersignup', async(req, res) => {
     let name = req.body.name;
     let desc = req.body.desc;
-    let seller_id = await database.addSeller(name, desc); // -1 if err
+    let pwd = req.body.pwd;
+    let seller_id = await database.addSeller(name, desc, pwd); // -1 if err
     let response = { id: seller_id, seller_name: name };
     res.json(response);
 });
@@ -92,7 +95,8 @@ app.post('/sellersignup', async(req, res) => {
 // Return id and name for seller login
 app.post('/sellerlogin', async(req, res) => {
     let name = req.body.seller_name;
-    let results = await database.getSeller(name);
+    let pwd = req.body.pwd;
+    let results = await database.getSeller(name, pwd);
     let response;
     if(results[0]){
         let seller = results[0];
@@ -211,6 +215,13 @@ app.post('/getpurchases', async(req, res) => {
     let customer_id = req.body.customer_id;
     let results = await database.getCustomerPurchases(customer_id);
     res.json({ purchases: results })
+});
+
+// Return all customer purchases
+app.post('/getshipments', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await database.getCustomerShipments(customer_id);
+    res.json({ shipments: results })
 });
 
 // Return all customer addresses
