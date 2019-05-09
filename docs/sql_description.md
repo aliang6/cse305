@@ -1,8 +1,8 @@
-# CSE 305: Homework 2
+# E-Commerce: SQL Mapping
 
-### Andy Liang (111008856), Johnny So (111158276)
+### Andy Liang (111008856)
 
-### Due by April 14, 11:59 PM
+### Johnny So (111158276)
 
 
 
@@ -52,6 +52,7 @@ The `.csv` files have a small sample of mock data used by`populate_tables.sql` .
     - `id` 
     - `seller_name`
     - `seller_description`
+    - `pwd`
   - Constraints
     - `PRIMARY KEY (id)`
 
@@ -64,6 +65,7 @@ The `.csv` files have a small sample of mock data used by`populate_tables.sql` .
     - `last_name`
     - `email`
     - `phone`
+    - `pwd`
   - Constraints
     - `PRIMARY KEY (id)`
   - Notes
@@ -184,9 +186,9 @@ As these relations represent Relationships from the ER diagram, they must includ
     - `review_text`
     - `write_date`
   - Constraints
-    - `PRIMARY KEY (customer_id, item_id, seller_id)`
+    - `PRIMARY KEY (customer_id, item_id)`
     - `FOREIGN KEY (customer_id) REFERENCES customer(id)`
     - `FOREIGN KEY (item_id) REFERENCES item(id)`
     - `FOREIGN KEY (seller_id) REFERENCES seller(id)`
   - Notes
-    - We limit each `Customer` to 1 review per `(Item,Seller)` tuple with the specified Primary Key. If needed, the `Customer` can edit his/her review, but not post a million reviews for one specific `(Item,Seller)` to reduce spam.
+    - We limit each `Customer` to 1 review per `Item` . If needed, the `Customer` can edit his/her review, but not post a million reviews for one specific `Item` to reduce spam.

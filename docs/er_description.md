@@ -1,8 +1,8 @@
-# CSE 305: Homework 1
+# E-Commerce: ER Diagram
+
+### Andy Liang (111008856)
 
 ### Johnny So (111158276)
-
-### Due by March 13, 11:59 PM
 
 
 

@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS purchase (
         ON DELETE NO ACTION          -- maintain records
 );
 
-CREATE TABLE IF NOT EXISTS shipments (
+CREATE TABLE IF NOT EXISTS shipment (
     shipment_id INT NOT NULL AUTO_INCREMENT,
     item_id INT NOT NULL,
     customer_id INT NOT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     review_text CHAR(128) NOT NULL,        
     write_date DATE NOT NULL,
         /* limit each customer to 1 review per item,seller */
-    PRIMARY KEY (customer_id, item_id, seller_id),
+    PRIMARY KEY (customer_id, item_id),
     FOREIGN KEY (customer_id)
         REFERENCES customer(id)
         ON UPDATE CASCADE
