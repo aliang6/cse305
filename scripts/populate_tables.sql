@@ -101,7 +101,7 @@ UPDATE sells
     WHERE seller_id = 1 AND item_id = 1;
 
 INSERT
-    INTO shippedto(shipment_id,item_id,customer_id,purchase_id,address_id,carrier_id,tracking_number,process_date,arrival_date,shipping_fee)
+    INTO shipment(shipment_id,item_id,customer_id,purchase_id,address_id,carrier_id,tracking_number,process_date,arrival_date,shipping_fee)
     VALUES
         (0,1,1,1,2,1,'ABCD',CURDATE(),NULL,0.00);
 
@@ -116,17 +116,17 @@ UPDATE sells
     WHERE seller_id = 4 AND item_id = 6;
 
 INSERT
-    INTO shippedto(shipment_id,item_id,customer_id,purchase_id,address_id,carrier_id,tracking_number,process_date,arrival_date,shipping_fee)
+    INTO shipment(shipment_id,item_id,customer_id,purchase_id,address_id,carrier_id,tracking_number,process_date,arrival_date,shipping_fee)
     VALUES
         (0,6,2,2,4,2,'EFGH',CURDATE(),NULL,0.00);
 
 -- Carrier delivers Customer 1 his/her package
-UPDATE shippedto
+UPDATE shipment
     SET arrival_date = CURDATE()
     WHERE shipment_id = 1;
 
 -- Carrier delivers Customer 2 his/her package
-UPDATE shippedto
+UPDATE shipment
     SET arrival_date = CURDATE()
     WHERE shipment_id = 2;
 

@@ -162,15 +162,15 @@ async function getCustomerPurchases(customer_id) {
 }
 
 async function getCustomerShipments(customer_id) {
-    let query = `SELECT shippedto.shipment_id, shippedto.tracking_number, shippedto.process_date, shippedto.arrival_date, 
-                    shippedto.shipping_fee, item.item_name, carrier.carrier_name, address.address1, address.address2 
-                FROM shippedto
-                JOIN item ON shippedto.item_id = item.id 
-                JOIN carrier ON shippedto.carrier_id = carrier.id
+    let query = `SELECT shipment.shipment_id, shipment.tracking_number, shipment.process_date, shipment.arrival_date, 
+                    shipment.shipping_fee, item.item_name, carrier.carrier_name, address.address1, address.address2 
+                FROM shipment
+                JOIN item ON shipment.item_id = item.id 
+                JOIN carrier ON shipment.carrier_id = carrier.id
                 JOIN address ON 
-                    shippedto.customer_id = address.customer_id AND 
-                    shippedto.address_id = address.id
-                WHERE shippedto.customer_id=?`;
+                    shipment.customer_id = address.customer_id AND 
+                    shipment.address_id = address.id
+                WHERE shipment.customer_id=?`;
     let [rows, fields] = await conn.execute(query, [customer_id]);
     return rows;
 }
@@ -249,7 +249,7 @@ async function purchase(customer_id, address_id, carrier_id, card_number, card_e
                                         [0, customer_id, row.item_id, row.quantity, row.quantity*row.price, 
                                             row.seller_id, purchase_date, address_id, card_number, card_expiry_date]
         )
-        let addShippedtoQuery = `INSERT INTO shippedto
+        let addShippedtoQuery = `INSERT INTO shipment
                                     (shipment_id, item_id, customer_id, purchase_id, address_id, carrier_id, 
                                         tracking_number, process_date, arrival_date, shipping_fee)
                                     VALUES (?,?,?,?,?,?,?,?,?,?)`;
