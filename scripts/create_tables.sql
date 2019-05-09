@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS seller (
     id INT NOT NULL AUTO_INCREMENT,
     seller_name CHAR(64) NOT NULL,
     seller_description CHAR(255) NOT NULL,
+    pwd CHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS customer (
     last_name CHAR(32) NOT NULL,
     email CHAR(64) NOT NULL,
     phone CHAR(15) NOT NULL,
+    pwd CHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
