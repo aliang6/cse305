@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS purchase (
         ON DELETE NO ACTION          -- maintain records
 );
 
-CREATE TABLE IF NOT EXISTS shippedto (
+CREATE TABLE IF NOT EXISTS shipments (
     shipment_id INT NOT NULL AUTO_INCREMENT,
     item_id INT NOT NULL,
     customer_id INT NOT NULL,
