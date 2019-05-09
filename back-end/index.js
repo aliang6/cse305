@@ -38,43 +38,69 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/test', async(req, res) => {
-    let results = await database.getTables();
-    console.log(results);
-    res.json();
+/* Customer */
+// Add customer to the database if they don't exist
+app.post('/customersignup', async(req, res) => {
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let email = (req.body.email).toLowerCase();
+    let phone = req.body.phone;
+    let customer_id = await database.addCustomer(first_name, last_name, email, phone); // -1 if err
+    let response = { id: customer_id, first_name: first_name, last_name: last_name };
+    res.json(response);
 });
 
-// Return all items
-app.get('/items', async(req, res) => {
-    let results = await Promise.all([database.getAllItems(), database.getItemTypes()]);
-    let items = results[0];
-    let item_types = results[1];
-    for(let item of items) {
-        item.category = item_types[item.category - 1].category;
+// Return id and name for customer login
+app.post('/customerlogin', async(req, res) => {
+    let email = (req.body.email).toLowerCase();
+    let results = await database.getCustomer(email);
+    let response;
+    if(results[0]){
+        let customer = results[0];
+        response = { id: customer.id, first_name: customer.first_name, last_name: customer.last_name };
+    } else {
+        response = { id: -1 }
     }
-    res.json({ items: items });
+    res.json(response);
 });
 
-// Return all item types
-app.get('/itemtypes', async(req, res) => {
-    let item_types = await database.getItemTypes();
-    types = [];
-    for(let item_type of item_types) {
-        types.push(item_type.category);
-    }
-    res.json({ item_types: types });
+// Add a new customer address
+app.post('/addaddress', async(req, res) => {
+    console.log(req.body);
+    let customer_id = req.body.customer_id;
+    let address_type = req.body.address_type;
+    let address1 = req.body.address1;
+    let address2 = req.body.address2 ? req.body.address2 : NULL;
+    let apt = req.body.apt ? req.body.apt : NULL;
+    let city = req.body.city;
+    let zip = req.body.zip;
+    await database.addAddress(customer_id, address_type, address1, address2, apt, city, zip);
+    return res.json({});
 });
 
-// Return all items from the specified seller
-app.get('/seller/:id', async(req, res) => {
-    let seller_id = req.params.id;
-    let results = await Promise.all([database.getItemsFromSeller(seller_id), database.getItemTypes()]);
-    let items = results[0];
-    let item_types = results[1];
-    for(let item of items) {
-        item.category = item_types[item.category - 1].category;
+
+/* Seller */
+// Add seller to the database if they don't exist
+app.post('/sellersignup', async(req, res) => {
+    let name = req.body.name;
+    let desc = req.body.desc;
+    let seller_id = await database.addSeller(name, desc); // -1 if err
+    let response = { id: seller_id, seller_name: name };
+    res.json(response);
+});
+
+// Return id and name for seller login
+app.post('/sellerlogin', async(req, res) => {
+    let name = req.body.seller_name;
+    let results = await database.getSeller(name);
+    let response;
+    if(results[0]){
+        let seller = results[0];
+        response = { id: seller.id, seller_name: name };
+    } else {
+        response = { id: -1 }
     }
-    res.json({ items: items });
+    res.json(response);
 });
 
 // Add a seller listing to the database
@@ -132,60 +158,75 @@ app.post('/removelisting', async(req, res) => {
     res.json({ success: response });
 });
 
+/* Retrieval */
+// Return all items
+app.get('/items', async(req, res) => {
+    let results = await Promise.all([database.getAllItems(), database.getItemTypes()]);
+    let items = results[0];
+    let item_types = results[1];
+    for(let item of items) {
+        item.category = item_types[item.category - 1].category;
+    }
+    res.json({ items: items });
+});
+
+// Return all items matching a search query
+app.post('/search', async(req, res) => {
+    let query = req.body.q;
+    let results = await database.searchItems(query);
+    console.log(results);
+    res.json({ items: results });
+ });
+
+// Return all item types
+app.get('/itemtypes', async(req, res) => {
+    let item_types = await database.getItemTypes();
+    types = [];
+    for(let item_type of item_types) {
+        types.push(item_type.category);
+    }
+    res.json({ item_types: types });
+});
+
+// Return all items from the specified seller
+app.get('/seller/:id', async(req, res) => {
+    let seller_id = req.params.id;
+    let results = await Promise.all([database.getItemsFromSeller(seller_id), database.getItemTypes()]);
+    let items = results[0];
+    let item_types = results[1];
+    for(let item of items) {
+        item.category = item_types[item.category - 1].category;
+    }
+    res.json({ items: items });
+});
+
 // Return all sellers on the site
 app.get('/sellers', async(req, res) => {
     let sellers = await database.getAllSellers();
     res.json({ sellers: sellers });
 });
 
-// Return id and name for customer login
-app.post('/customerlogin', async(req, res) => {
-    let email = (req.body.email).toLowerCase();
-    let results = await database.getCustomer(email);
-    let response;
-    if(results[0]){
-        let customer = results[0];
-        response = { id: customer.id, first_name: customer.first_name, last_name: customer.last_name };
-    } else {
-        response = { id: -1 }
-    }
-    res.json(response);
+// Return all customer purchases
+app.post('/getpurchases', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await database.getCustomerPurchases(customer_id);
+    res.json({ purchases: results })
 });
 
-// Return id and name for seller login
-app.post('/sellerlogin', async(req, res) => {
-    let name = req.body.seller_name;
-    let results = await database.getSeller(name);
-    let response;
-    if(results[0]){
-        let seller = results[0];
-        response = { id: seller.id, seller_name: name };
-    } else {
-        response = { id: -1 }
-    }
-    res.json(response);
+// Return all customer addresses
+app.post('/getaddresses', async(req, res) => {
+    let customer_id = req.body.customer_id;
+    let results = await database.getAddresses(customer_id);
+    res.json({ addresses: results });
 });
 
-// Add customer to the database if they don't exist
-app.post('/customersignup', async(req, res) => {
-    let first_name = req.body.first_name;
-    let last_name = req.body.last_name;
-    let email = (req.body.email).toLowerCase();
-    let phone = req.body.phone;
-    let customer_id = await database.addCustomer(first_name, last_name, email, phone); // -1 if err
-    let response = { id: customer_id, first_name: first_name, last_name: last_name };
-    res.json(response);
+// Return all carriers
+app.get('/getcarriers', async(req, res) => {
+    let results = await database.getCarriers();
+    res.json({ carriers: results });
 });
 
-// Add seller to the database if they don't exist
-app.post('/sellersignup', async(req, res) => {
-    let name = req.body.name;
-    let desc = req.body.desc;
-    let seller_id = await database.addSeller(name, desc); // -1 if err
-    let response = { id: seller_id, seller_name: name };
-    res.json(response);
-});
-
+/* Shopping cart */
 // Add an item to a customer's cart
 app.post('/addtocart', async(req, res) => {
     let customer_id = req.body.customer_id;
@@ -216,45 +257,16 @@ app.post('/removecartitem', async(req, res) => {
     res.json({});
 });
 
+// Purchase all items in a customer's shopping cart
 app.post('/purchase', async(req, res) => {
     let customer_id = req.body.customer_id;
     let address_id = req.body.address_id;
+    let carrier_id = req.body.carrier_id;
     let card_number = req.body.card_number;
     let card_expiry_date = req.body.card_expiry_date;
-    await database.purchase(customer_id, address_id, card_number, card_expiry_date);
+    await database.purchase(customer_id, address_id, carrier_id, card_number, card_expiry_date);
     res.json({});
 });
 
-app.post('/getpurchases', async(req, res) => {
-    let customer_id = req.body.customer_id;
-    let results = await database.getCustomerPurchases(customer_id);
-    res.json({ purchases: results })
-});
-
-app.post('/addaddress', async(req, res) => {
-    console.log(req.body);
-    let customer_id = req.body.customer_id;
-    let address_type = req.body.address_type;
-    let address1 = req.body.address1;
-    let address2 = req.body.address2 ? req.body.address2 : NULL;
-    let apt = req.body.apt ? req.body.apt : NULL;
-    let city = req.body.city;
-    let zip = req.body.zip;
-    await database.addAddress(customer_id, address_type, address1, address2, apt, city, zip);
-    return res.json({});
-});
-
-app.post('/getaddresses', async(req, res) => {
-    let customer_id = req.body.customer_id;
-    let results = await database.getAddresses(customer_id);
-    res.json({ addresses: results });
-});
-
-app.post('/search', async(req, res) => {
-   let query = req.body.q;
-   let results = await database.searchItems(query);
-   console.log(results);
-   res.json({ items: results });
-});
 
 let server = app.listen(PORT, '127.0.0.1', () => console.log(`Server running on http://127.0.0.1:${PORT}`));

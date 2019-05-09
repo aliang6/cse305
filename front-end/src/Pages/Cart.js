@@ -19,6 +19,8 @@ export default class Cart extends Component {
             zip: '',
             addresses: null,
             selected_address: '',
+            carriers: null,
+            selected_carrier: '',
             card_number: '',
             card_expiry_date: '',
         };
@@ -28,11 +30,13 @@ export default class Cart extends Component {
         this.purchaseItems = this.purchaseItems.bind(this);
         this.addAddress = this.addAddress.bind(this);
         this.retrieveAddresses = this.retrieveAddresses.bind(this);
+        this.retrieveCarriers = this.retrieveCarriers.bind(this);
     }
 
     componentWillMount() {
         this.retrieveCart();
         this.retrieveAddresses();
+        this.retrieveCarriers();
     }
 
     handleInputChange(event) {
@@ -70,10 +74,13 @@ export default class Cart extends Component {
     async purchaseItems(event) {
         event.preventDefault();
         try {
+            let card_number_length = this.state.card_number.length;
+            let card_number = this.state.card_number.substring(card_number_length - 4, card_number_length);
             let body = {
                 customer_id: this.props.customer_id,
                 address_id: this.state.selected_address,
-                card_number: this.state.card_number,
+                carrier_id: this.state.selected_carrier,
+                card_number: card_number,
                 card_expiry_date: this.state.card_expiry_date,
             };
             console.log(body);
@@ -135,6 +142,23 @@ export default class Cart extends Component {
             this.setState({
                 addresses: json.addresses,
                 selected_address: json.addresses[0] ? json.addresses[0].id : null,
+            });
+        } catch(err) {
+            console.log(err);
+        }
+    }
+
+    async retrieveCarriers() {
+        try {
+            let response = await fetch(constants.API.hostname + '/getcarriers', {
+                method: 'GET',
+                headers: { 'Content-Type':'application/json' },
+            });
+
+            let json = await response.json(); 
+            this.setState({
+                carriers: json.carriers,
+                selected_carrier: json.carriers[0] ? json.carriers[0].id : null,
             });
         } catch(err) {
             console.log(err);
@@ -227,6 +251,14 @@ export default class Cart extends Component {
                             <select name="selected_address" value={this.state.selected_address} onChange={this.handleInputChange}>
                                 {this.state.addresses && this.state.addresses.length !== 0 && this.state.addresses.map(address => (
                                     <option type="number" value={address.id} key={address.id}>{address.address1 + " "} {address.address2 !== null && address.address2 + " "}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <label>
+                            Carrier:
+                            <select name="selected_carrier" value={this.state.selected_carrier} onChange={this.handleInputChange}>
+                                {this.state.carriers && this.state.carriers.length !== 0 && this.state.carriers.map(carrier => (
+                                    <option type="number" value={carrier.id} key={carrier.id}>{carrier.carrier_name}</option>
                                 ))}
                             </select>
                         </label>

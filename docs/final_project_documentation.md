@@ -373,6 +373,16 @@ As these relations represent Relationships from the ER diagram, they must includ
     RIGHT JOIN sells ON item.id = sells.item_id;
     ```
 
+- Retrieve all items that match a search query
+
+  - ```sql
+    SELECT item.id, item.item_name, item.item_description, item_type.category, sells.price, sells.stock
+    FROM item 
+    RIGHT JOIN sells ON item.id = sells.item_id
+    JOIN item_type ON item.category = item_type.id
+    WHERE item_name OR item_description LIKE ?
+    ```
+
 - Retrieve all sellers
 
   - ```sql
