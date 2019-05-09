@@ -1,6 +1,13 @@
-.seller-list{
+.seller-list {
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.seller {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid teal;
+    border-radius: 10px;
 }

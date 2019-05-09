@@ -84,19 +84,10 @@ async function addCustomer(first_name, last_name, email, phone) {
     if(results[0]) { // Customer exists
         return -1;
     }
-
-    let query = 'SELECT MAX(id) FROM customer';
-    let [rows, fields] = await conn.execute(query);
-    let id;
-    if(rows[0]) {
-        id = rows[0]['MAX(id)'] + 1;
-    } else {
-        id = 1;
-    }
     
-    query = 'INSERT INTO customer (id, first_name, last_name, email, phone) VALUES (?,?,?,?,?)';
-    [rows, fields] = await conn.execute(query, [id, first_name, last_name, email, phone]);
-    return id;
+    let query = 'INSERT INTO customer (id, first_name, last_name, email, phone) VALUES (?,?,?,?,?)';
+    [rows, fields] = await conn.execute(query, [0, first_name, last_name, email, phone]);
+    return rows.insertId;
 }
 
 async function addSeller(name, desc) {
@@ -104,31 +95,13 @@ async function addSeller(name, desc) {
     if(results[0]) { // Seller exists
         return -1;
     }
-
-    let query = 'SELECT MAX(id) FROM seller';
-    let [rows, fields] = await conn.execute(query);
-    let id;
-    if(rows[0]) {
-        id = rows[0]['MAX(id)'] + 1;
-    } else {
-        id = 1;
-    }
     
-    query = 'INSERT INTO seller (id, seller_name, seller_description) VALUES (?,?,?)';
-    [rows, fields] = await conn.execute(query, [id, name, desc]);
-    return id;
+    let query = 'INSERT INTO seller (id, seller_name, seller_description) VALUES (?,?,?)';
+    [rows, fields] = await conn.execute(query, [0, name, desc]);
+    return rows.insertId;
 }
 
 async function addItem(seller_id, name, desc, price, stock, type) { // Adds if doesn't exist, otherwise updates existing item
-    /*let query = 
-    `SELECT id
-    FROM item
-    WHERE item_name=?`;
-    let [rows, fields] = await conn.execute(query, [name]);
-    if(rows[0]) { // Item exists
-        return false;
-    } */
-
     let query = 'SELECT MAX(id) FROM item';
     [rows, fields] = await conn.execute(query);
     let id;
@@ -205,18 +178,8 @@ async function removeCartItem(customer_id, item_id) {
     return;
 }
 
-async function purchase(customer_id, address_id, card_number, card_expiry_date) {
-    // Retrieve max id from purchase
-    let query = 'SELECT MAX(purchase_id) FROM purchase';
-    let [rows, fields] = await conn.execute(query);
-    let id;
-    if(rows[0]) {
-        id = rows[0]['MAX(purchase_id)'] + 1;
-    } else {
-        id = 1;
-    }
-    
-    query = 
+async function purchase(customer_id, address_id, card_number, card_expiry_date) {    
+    let query = 
     `SELECT *
     FROM shoppingcart 
     JOIN sells ON shoppingcart.item_id = sells.item_id
@@ -244,7 +207,7 @@ async function purchase(customer_id, address_id, card_number, card_expiry_date) 
         promises.push(
             conn.execute(
                 addPurchaseQuery, 
-                [id++, customer_id, row.item_id, row.quantity, row.quantity*row.price, row.seller_id, purchase_date, address_id, card_number, card_expiry_date]));
+                [0, customer_id, row.item_id, row.quantity, row.quantity*row.price, row.seller_id, purchase_date, address_id, card_number, card_expiry_date]));
         
     }
     await Promise.all(promises);
@@ -267,22 +230,13 @@ async function getCustomerPurchases(customer_id) {
 }
 
 async function addAddress(customer_id, address_type, address1, address2, apt, city, zip) {
-    let query = 'SELECT MAX(id) FROM address';
-    let [rows, fields] = await conn.execute(query);
-    let id;
-    if(rows[0]) {
-        id = rows[0]['MAX(id)'] + 1;
-    } else {
-        id = 1;
-    }
-
     let insertQuery = 'INSERT INTO address (customer_id, id, address_type, address1, address2, apt, city, zip) VALUES (?,?,?,?,?,?,?,?)';
-    await conn.execute(insertQuery, [customer_id, id, address_type, address1, address2, apt, city, zip]);
+    await conn.execute(insertQuery, [customer_id, 0, address_type, address1, address2, apt, city, zip]);
     return;
 }
 
 async function getAddresses(customer_id) {
-    let query = `SELECT * FROM address WHERE customer_id=?`;
+    let query = `SELECT * FROM address WHERE customer_id=? AND address_type=0`;
     let [rows, fields] = await conn.execute(query, [customer_id]);
     return rows;
 }

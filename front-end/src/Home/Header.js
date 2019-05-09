@@ -70,7 +70,6 @@ export default class Header extends Component {
                             <button onClick={this.props.sellerClick}>Sellers</button>*/}
                             <Link className="header-btn" to="/items">Items</Link>
                             <Link className="header-btn" to="/sellers">Sellers</Link>
-                            <Link className="header-btn" to="/login">Login</Link>
                             {this.state.customer_id && 
                             <div className="customer-links">
                                 <Link className="header-btn" to="/cart">Cart</Link>
@@ -82,8 +81,8 @@ export default class Header extends Component {
                             <div className="seller-links">
                                 <Link className="header-btn" to="/store">Store</Link>
                                 <p>Seller #{this.state.sellerId + " " + this.state.sellerName}</p>
-                            </div>
-                            }
+                            </div>}
+                            <Link className="header-btn" to="/login">Login</Link>
                         </div>
                     </ul>
                 </div>
