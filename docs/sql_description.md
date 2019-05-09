@@ -24,15 +24,26 @@ The `.csv` files have a small sample of mock data used by`populate_tables.sql` .
 
 ​	<u>Note</u>: some text fields such as `X_name, X_description` are currently limited in length for now. We may impose a hard limit as is currently done in `create_tables.sql` for the final product as it's reasonable to keep certain fields to a certain length. For example, if you are a seller, you would want to keep your item name somewhat short otherwise it'll look intimidating to potential customers. However, we would have to figure out what the length of such fields should be.
 
+- ### ItemType
+
+  - To ensure that the type of an item is within a valid list of types.
+  - Attributes
+  - `id`
+    - `category`
+  - Constraints
+    - `PRIMARY KEY (id)`
+  
 - ### Item
 
   - An easy one-to-one mapping from the ER diagram to a MySQL relation.
   - Attributes
     - `id`
     - `item_name`
+    - `category`
     - `item_description`
   - Constraints
     - `PRIMARY KEY (id)`
+    - `FOREIGN KEY (category) REFERENCES ItemType(id)`
 
 - ### Seller
 
@@ -98,7 +109,6 @@ The `.csv` files have a small sample of mock data used by`populate_tables.sql` .
     - `carrier_name`
   - Constraints
     - `PRIMARY KEY (id)`
-
 
 ### Relationship Tables
 

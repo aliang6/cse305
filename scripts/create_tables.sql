@@ -77,20 +77,6 @@ CREATE TABLE IF NOT EXISTS carrier (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS administrator (
-    id INT NOT NULL AUTO_INCREMENT,
-    first_name CHAR(32) NOT NULL,
-    last_name CHAR(32) NOT NULL,
-    admin_role CHAR(32) NOT NULL,
-    date_joined DATE NOT NULL,
-    supervisor_id INT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (supervisor_id)
-        REFERENCES administrator(id)
-        ON UPDATE CASCADE
-        ON DELETE SET NULL
-);
-
 /* Create Relationship Types */
 
 CREATE TABLE IF NOT EXISTS sells (
