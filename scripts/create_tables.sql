@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS address (
 CREATE TABLE IF NOT EXISTS shoppingcart (
     customer_id INT NOT NULL,
     item_id INT NOT NULL,
-    quantity TINYINT NOT NULL,
+    quantity TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (customer_id, item_id),
     FOREIGN KEY (customer_id)
         REFERENCES customer(id)
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS sells (
     seller_id INT NOT NULL,
     item_id INT NOT NULL,
     price DECIMAL(6,2) NOT NULL,
-    stock INT NOT NULL,
+    stock INT UNSIGNED NOT NULL,
     PRIMARY KEY (seller_id, item_id),
     FOREIGN KEY (seller_id)
         REFERENCES seller(id)
