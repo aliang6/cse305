@@ -237,6 +237,9 @@ async function purchase(customer_id, address_id, carrier_id, card_number, card_e
     const purchase_date = date.getFullYear() + "-" + String(date.getMonth()).padStart(2, '0') + "-" + String(date.getDate()).padStart(2, '0');
 
     for(let row of rows) {
+		if(row.stock - row.quantity < 0) {
+		    continue;
+		}
         let updateQuery = `UPDATE sells
                             SET stock=?
                             WHERE item_id=? AND seller_id=?`;
